@@ -46,4 +46,29 @@ function bbufs_shortcode( $atts ) {
     if ( ! bbufs_is_bbpress_active() ) {
         return '<div class="bbufs-notice">bbPress / BuddyBoss Forums not detected.</div>';
     }
+    $user_id = get_current_user_id();
+    $forums = bbufs_get_user_forums( $user_id );
+
+    if ( empty( $forums ) ) {
+        return '<div class="bbufs-empty">No forums available.</div>';
+    }
+
+    ob_start();
+    echo '<ul class="bbufs-list">';
+    foreach ( $forums as $fid ) {
+        $title = get_the_title( $fid );
+        $link  = get_permalink( $fid );
+        printf( '<li><a href="%s">%s</a></li>', esc_url( $link ), esc_html( $title ) );
+    }
+    echo '</ul>';
+    return ob_get_clean();
+}
+add_shortcode( 'bb_user_forums', 'bbufs_shortcode' );
+
+// Optional: enqueue minimal CSS
+function bbufs_enqueue_styles() {
+    wp_register_style( 'bbufs-css', plugins_url( 'assets/style.css', __FILE__ ), array(), '1.0.0' );
+    wp_enqueue_style( 'bbufs-css' );
+}
+add_action( 'wp_enqueue_scripts', 'bbufs_enqueue_styles' );
 
