@@ -71,4 +71,3 @@ function bbufs_enqueue_styles() {
     wp_enqueue_style( 'bbufs-css' );
 }
 add_action( 'wp_enqueue_scripts', 'bbufs_enqueue_styles' );
-
